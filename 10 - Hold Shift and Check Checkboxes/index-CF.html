@@ -104,6 +104,40 @@
   </div>
 
 <script>
+  let spacePressed = false;
+
+  window.addEventListener("keydown", (e)=>{
+    if (e.keyCode === 16){
+      spacePressed = true;
+    }
+  });
+  window.addEventListener("keyup", (e)=>{
+    if (e.keyCode === 16){
+      spacePressed = false;
+    }
+  });
+  
+ const checkList =[...document.querySelectorAll('div input')];
+
+ checkList.forEach(function(item) {
+  item.addEventListener("click", function(){
+    var selectedItems;
+    if (spacePressed){
+      selectedItems = checkList.filter(item => {
+        return (item.checked);
+      });  
+    
+      if (selectedItems.length>1){
+        const first = checkList.indexOf(selectedItems[0]);
+        const last = checkList.indexOf(selectedItems[selectedItems.length-1]);
+        for (var i=first; i<last; i++){
+          checkList[i].checked=true;
+        }
+      }
+    }
+  });
+});
+ 
 </script>
 </body>
 </html>
