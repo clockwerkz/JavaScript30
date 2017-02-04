@@ -31,27 +31,36 @@
   const items = [];
 
   function addItem(e){
-    e.preventDefault();
+    e.preventDefault(); //First thing, we prevent the form from refreshing the page by calling preventDefault.
+
+    //The current context is the form, so this would refer to it. so running querySelector on this, looking for an element that contains the attribute name=item will return the textfield. 
+    //The value of that textfield is what we are after.
     const text = (this.querySelector('[name=item]')).value;
+
+    //create an Object using the value from the text field. 
     const item = {
       text: text,
       done: false
     };
+    //push the item in to the items array
     items.push(item);
+
+    //then call this function to update the unordered list in the html to display the recently added item.
     populateList(items, itemsList);
     this.reset();    
   }
 
   function populateList(plates = [], platesList) {
-    platesList.innerHTML = plates.map((plate, index) => {
+    platesList.innerHTML = plates.map((plate, i) => {
       return `
         <li>
-          <label for="">${plate.text}</label>
+          <input type="checkbox" data-index="item${i}" id="item${i}" ${plate.done?'checked':''} />
+          <label for="item${i}">${plate.text}</label>
         </li>
       `;
     }).join('');
   }
-
+  //We add an eventListener 'submit' to the FORM instead of the button so that the event will trigger not just on button clicks, but also on pressing enter on the keyboard.
   addItems.addEventListener('submit', addItem);
   
 
