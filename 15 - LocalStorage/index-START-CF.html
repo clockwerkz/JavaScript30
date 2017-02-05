@@ -28,7 +28,7 @@
 <script>
   const addItems = document.querySelector('.add-items');
   const itemsList = document.querySelector('.plates');
-  const items = [];
+  const items = JSON.parse(localStorage.getItem("items")) || [];
 
   function addItem(e){
     e.preventDefault(); //First thing, we prevent the form from refreshing the page by calling preventDefault.
@@ -47,6 +47,7 @@
 
     //then call this function to update the unordered list in the html to display the recently added item.
     populateList(items, itemsList);
+    localStorage.setItem('items', JSON.stringify(items))
     this.reset();    
   }
 
@@ -54,16 +55,33 @@
     platesList.innerHTML = plates.map((plate, i) => {
       return `
         <li>
-          <input type="checkbox" data-index="item${i}" id="item${i}" ${plate.done?'checked':''} />
+          <input type="checkbox" data-index="${i}" id="item${i}" ${plate.done ? 'checked' : ''} />
           <label for="item${i}">${plate.text}</label>
         </li>
       `;
     }).join('');
+
   }
+//Event Delegation: we listen for a click on an element that's higher and then we check the click to see if it's the 
+//item we want.
+function toggleDone(e) {
+  //using element.matches: selectorString can be a tag, or .class or #id.
+  //var result = element.matches(selectorString); 
+  //result holds the return value true or false.
+  //selectorString is a string representing the selector to test.
+
+  if (!e.target.matches('input')) return; //skip this unless it's an input
+  const element = e.target;
+  const index = element.dataset.index;
+  items[index].done = !items[index].done;
+  localStorage.setItem('items', JSON.stringify(items))
+}
+
   //We add an eventListener 'submit' to the FORM instead of the button so that the event will trigger not just on button clicks, but also on pressing enter on the keyboard.
   addItems.addEventListener('submit', addItem);
+  itemsList.addEventListener('click', toggleDone);
   
-
+  populateList(items, itemsList);
 
 </script>
 
